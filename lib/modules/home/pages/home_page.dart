@@ -425,45 +425,45 @@ class _Categories extends StatelessWidget {
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
                   final category = snapshot.data![index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (context, animation, _) =>
-                              FadeTransition(
-                            opacity: animation,
-                            child: ProductCategoryPage(
-                              idCategory: category.id,
-                              nameCategory: category.nombre,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: AppTheme.borderGrey, width: 0.2),
-                          borderRadius: BorderRadius.circular(50),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppTheme.borderGrey.withOpacity(0.3),
-                              spreadRadius: 1,
-                              blurRadius: 3,
-                              offset: const Offset(0, 1),
-                            ),
-                          ],
-                          color: AppTheme.white,
-                        ),
-                        child: Text(category.nombre),
-                      ),
-                    ),
-                  );
+                  // return GestureDetector(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       PageRouteBuilder(
+                  //         pageBuilder: (context, animation, _) =>
+                  //             FadeTransition(
+                  //           opacity: animation,
+                  //           child: ProductCategoryPage(
+                  //             idCategory: category.id,
+                  //             nameCategory: category.nombre,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     );
+                  //   },
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.symmetric(horizontal: 5),
+                  //     child: Container(
+                  //       padding: const EdgeInsets.symmetric(horizontal: 10),
+                  //       alignment: Alignment.center,
+                  //       decoration: BoxDecoration(
+                  //         border: Border.all(
+                  //             color: AppTheme.borderGrey, width: 0.2),
+                  //         borderRadius: BorderRadius.circular(50),
+                  //         boxShadow: [
+                  //           BoxShadow(
+                  //             color: AppTheme.borderGrey.withOpacity(0.3),
+                  //             spreadRadius: 1,
+                  //             blurRadius: 3,
+                  //             offset: const Offset(0, 1),
+                  //           ),
+                  //         ],
+                  //         color: AppTheme.white,
+                  //       ),
+                  //       child: Text(category.nombre),
+                  //     ),
+                  //   ),
+                  // );
                 },
               );
             } else {
