@@ -41,4 +41,9 @@ class GlobalHelper {
       ),
     );
   }
+
+  static GlobalKey genKey() {
+    GlobalKey key = GlobalKey();
+    return key;
+  }
 }

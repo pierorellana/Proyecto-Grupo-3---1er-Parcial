@@ -13,12 +13,12 @@ class AppRoutes {
   static const String initialRoute = '/login';
 
   static final Map<String, WidgetBuilder> routes = {
-    '/': (_) => const HomePage(),
-    '/product_brand': (_) => const ProductBrandPage(),
-    '/product_category': (_) => const ProductCategoryPage(),
+    '/home': (_) => const HomePage(),
+    // '/product_brand': (_) => const ProductBrandPage(),
+    // '/product_category': (_) => const ProductCategoryPage(),
     '/login': (_) => const LoginPage(),
-    '/cart': (_) => const CartPage(),
-    '/register': (_) => const RegisterPage(),
+    //'/cart': (_) => const CartPage(),
+    //'/register': (_) => const RegisterPage(),
     '/administration': (_) => const ListProductPage(),
     '/new_product': (_) => const NewProductPage(),
   };

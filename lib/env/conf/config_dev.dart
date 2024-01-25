@@ -1,4 +1,4 @@
-import 'package:solca_app/env/config/config_base.dart';
+import 'package:ecommerce/env/conf/config_base.dart';
 
 class DevEnv extends BaseConfig{
   
@@ -7,5 +7,5 @@ class DevEnv extends BaseConfig{
 
   @override
 
-  String get serviceUrl => 'http://10.10.80.249:8910/';
+  String get serviceUrl => 'http://192.168.100.38:8000/';
 }

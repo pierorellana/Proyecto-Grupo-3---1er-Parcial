@@ -24,20 +24,20 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   @override
   void initState() {
     super.initState();
-    getData();
+    //getData();
   }
 
-  void getData() async {
-    final user = await authService.getCredentials();
-    setState(() {
-      token = user[0].token;
-      name = user[0].nombreUsuario;
-      lastname = user[0].apellidoUsuario;
-      email = user[0].correoUsuario;
-      photo = user[0].fotoUsuario;
-      isLogged = user[0].isLogged;
-    });
-  }
+  // void getData() async {
+  //   final user = await authService.getCredentials();
+  //   setState(() {
+  //     token = user[0].token;
+  //     name = user[0].nombreUsuario;
+  //     lastname = user[0].apellidoUsuario;
+  //     email = user[0].correoUsuario;
+  //     photo = user[0].fotoUsuario;
+  //     isLogged = user[0].isLogged;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -179,24 +179,24 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                       alertTitle: 'Cerrar Sesión',
                       alertContent: '¿Está seguro que desea cerrar sesión?',
                       onPressed: () async {
-                        final message = ScaffoldMessenger.of(context);
-                        final alert = Navigator.of(context);
-                        final logout = await authService.logout(token);
-                        if (logout) {
-                          alert.pop();
-                          message.showSnackBar(
-                            const SnackBar(
-                              content: Text('Sesión cerrada, vuelva pronto.'),
-                            ),
-                          );
-                        } else {
-                          message.showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                  'Error al cerrar sesión, intente de nuevo.'),
-                            ),
-                          );
-                        }
+                        // final message = ScaffoldMessenger.of(context);
+                        // final alert = Navigator.of(context);
+                        // final logout = await authService.logout(token);
+                        // if (logout) {
+                        //   alert.pop();
+                        //   message.showSnackBar(
+                        //     const SnackBar(
+                        //       content: Text('Sesión cerrada, vuelva pronto.'),
+                        //     ),
+                        //   );
+                        // } else {
+                        //   message.showSnackBar(
+                        //     const SnackBar(
+                        //       content: Text(
+                        //           'Error al cerrar sesión, intente de nuevo.'),
+                        //     ),
+                        //   );
+                        // }
                       },
                     );
                   },

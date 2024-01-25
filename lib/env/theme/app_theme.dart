@@ -11,4 +11,5 @@ class AppTheme {
   static const Color blueDark = Color(0xff192357);
   static const Color transparent = Color(0x00000000);
   static const Color black45 = Color(0x73000000);
+  static const Color hinText = Color(0xff5B5B5B);
 }

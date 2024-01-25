@@ -7,16 +7,18 @@ class FilledButtonWidget extends StatelessWidget {
     this.onPressed,
     required this.text,
     this.radius = 10,
+    this.color = AppTheme.blueDark,
   });
   final void Function()? onPressed;
   final String text;
   final double radius;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     return FilledButton(
       style: FilledButton.styleFrom(
-        backgroundColor: AppTheme.blueDark,
+        backgroundColor: color,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radius),
         ),

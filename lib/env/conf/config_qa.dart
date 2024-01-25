@@ -1,4 +1,4 @@
-import 'package:solca_app/env/config/config_base.dart';
+import 'package:ecommerce/env/conf/config_base.dart';
 
 class QaEnv extends BaseConfig{
   @override
