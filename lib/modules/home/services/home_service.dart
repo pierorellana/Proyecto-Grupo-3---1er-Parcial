@@ -1,73 +1,53 @@
-// import 'package:ecommerce/env/conf/routes_api.dart';
-// import 'package:ecommerce/shared/models/brands_model.dart';
-// import 'package:ecommerce/shared/models/category_model.dart';
-// import 'package:ecommerce/shared/models/product_model.dart';
-// import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-// class HomeService {
-//   Future<List<Brands>> getBrands() async {
-//     final url = Uri.parse('${RoutesApi.baseurl}rest/v1/marcas');
-//     final response = await http.get(url, headers: RoutesApi.headers);
+import 'package:ecommerce/modules/home/models/category_response.dart';
+import 'package:ecommerce/modules/home/models/products_response.dart';
+import 'package:ecommerce/shared/models/general_response.dart';
+import 'package:ecommerce/shared/services/http_interceptor.dart';
+import 'package:flutter/material.dart';
 
-//     if (response.statusCode == 200) {
-//       final brands = brandsFromJson(response.body);
-//       return brands;
-//     } else {
-//       throw Exception('Error ${response.statusCode}: ${response.reasonPhrase}');
-//     }
-//   }
+class HomeService {
+  InterceptorHttp interceptorHttp = InterceptorHttp();
 
-//   Future<List<Products>> getProducts() async {
-//     final url = Uri.parse('${RoutesApi.baseurl}product');
-//     final response = await http.get(url, headers: RoutesApi.headers);
+   Future<GeneralResponse<List<Products>>> getProducts(BuildContext context,{Map<String, dynamic>? queryParameters}) async {
 
-//     if (response.statusCode == 200) {
-//       final products = productsFromJson(response.body);
+    try {
+      String endPoint = 'product';
 
-//       return products;
-//     } else {
-//       throw Exception('Error ${response.statusCode}: ${response.reasonPhrase}');
-//     }
-//   }
+      GeneralResponse response = await interceptorHttp.request(context, 'GET', endPoint, null, queryParameters: null);
 
-//   Future<List<Category>> getCategories() async {
-//     final url = Uri.parse('${RoutesApi.baseurl}rest/v1/categorias');
-//     final response = await http.get(url, headers: RoutesApi.headers);
+      List<Products>? products;
 
-//     if (response.statusCode == 200) {
-//       final categories = categoryFromJson(response.body);
+      if (!response.error) {
+        products = productsFromJson(jsonEncode(response.data));
+      }
 
-//       return categories;
-//     } else {
-//       throw Exception('Error ${response.statusCode}: ${response.reasonPhrase}');
-//     }
-//   }
+      return GeneralResponse(data: products, message: response.message, error: response.error);
+    } catch (error) {
+      debugPrint("Error en productos $error");
+      return GeneralResponse(message: error.toString(), error: true);
+    }
 
-//   Future<List<Products>> getProductsOffer() async {
-//     final url =
-//         Uri.parse('${RoutesApi.baseurl}product?offer=1');
-//     final response = await http.get(url, headers: RoutesApi.headers);
+  }
 
-//     if (response.statusCode == 200) {
-//       final products = productsFromJson(response.body);
+  Future<GeneralResponse<CategoryResponse>> getCategories(BuildContext context) async {
+    try {
+      String endPoint = 'category';
 
-//       return products;
-//     } else {
-//       throw Exception('Error ${response.statusCode}: ${response.reasonPhrase}');
-//     }
-//   }
+      GeneralResponse response = await interceptorHttp.request(context, 'GET', endPoint, null, showLoading: false);
 
-//   Future<List<Products>> wantedProducts() async {
-//     final url =
-//         Uri.parse('${RoutesApi.baseurl}product?wanted_product=1');
-//     final response = await http.get(url, headers: RoutesApi.headers);
+      late CategoryResponse categoryResponse;
+      //late DataUserModel userCredentials;
 
-//     if (response.statusCode == 200) {
-//       final products = productsFromJson(response.body);
+      if (!response.error) {
+        categoryResponse = categoryResponseFromJson(jsonEncode(response.data));
+      }
 
-//       return products;
-//     } else {
-//       throw Exception('Error ${response.statusCode}: ${response.reasonPhrase}');
-//     }
-//   }//wanted products
-// }
+      return GeneralResponse(
+          data: categoryResponse, message: response.message, error: response.error);
+    } catch (error) {
+        debugPrint("Error en categorias $error");
+      return GeneralResponse(message: error.toString(), error: true);
+    }
+  }
+}

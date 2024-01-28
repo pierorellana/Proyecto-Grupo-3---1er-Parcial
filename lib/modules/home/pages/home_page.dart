@@ -1,4 +1,15 @@
+import 'package:ecommerce/modules/home/models/category_response.dart';
+import 'package:ecommerce/modules/home/models/products_response.dart';
+import 'package:ecommerce/modules/home/services/home_service.dart';
+import 'package:ecommerce/shared/models/category_model.dart';
+import 'package:ecommerce/shared/widgets/card_product_widget.dart';
+import 'package:ecommerce/shared/widgets/drawer_widget.dart';
+import 'package:ecommerce/shared/widgets/layout.dart';
 import 'package:flutter/material.dart';
+
+import '../../../env/theme/app_theme.dart';
+import '../../../shared/models/login_response.dart';
+import '../../../shared/secure_storage/user_data_storage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -8,10 +19,141 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<Products>? products;
+  CategoryResponse? categories;
+
+  final HomeService homeService = HomeService();
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+       LoginResponse? userData = await UserDataStorage().getUserData();
+       if(userData != null){
+          DrawerWidget.userData = userData;
+          DrawerWidget.isLogged = true;
+       }
+
+      getProducts();
+     // getCategories();
+    });
+    super.initState();
+  }
+
+  void getProducts() async {
+    setState(() {
+      products = null;
+    });
+    final resp = await homeService.getProducts(context);
+    if (!resp.error) {
+      products = resp.data;
+      setState(() {});
+    }
+  }
+
+  void getCategories() async {
+    final resp = await homeService.getCategories(context);
+    if (!resp.error) {
+      categories = resp.data;
+      setState(() {});
+    }
+  }
+
+  Widget productsWidget() {
+    final size = MediaQuery.of(context).size;
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: size.width / (size.height * 0.69),
+      ),
+      itemCount: products!.length,
+      itemBuilder: (context, index) {
+        final product = products![index];
+        return CardProductWidget(
+          product: product,
+        );
+      },
+    );
+  }
+
+  Widget categoriesWidget() {
+   return ListView.builder(
+                physics: const BouncingScrollPhysics(),
+                clipBehavior: Clip.none,
+                scrollDirection: Axis.horizontal,
+                itemCount: categories!.categories.length,
+                itemBuilder: (context, index) {
+                  final category = categories!.categories[index];
+                  return GestureDetector(
+                    onTap: () {
+                      // Navigator.push(
+                      //   context,
+                      //   PageRouteBuilder(
+                      //     pageBuilder: (context, animation, _) =>
+                      //         FadeTransition(
+                      //       opacity: animation,
+                      //       child: ProductCategoryPage(
+                      //         idCategory: category.id,
+                      //         nameCategory: category.nombre,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: AppTheme.borderGrey, width: 0.2),
+                          borderRadius: BorderRadius.circular(50),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppTheme.borderGrey.withOpacity(0.3),
+                              spreadRadius: 1,
+                              blurRadius: 3,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                          color: AppTheme.white,
+                        ),
+                        child: Text(category.name),
+                      ),
+                    ),
+                  );
+                },
+              );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(),
+    return LayoutWidget(
+      onRefresh: () async {
+        await Future.delayed(const Duration(milliseconds: 600));
+        getProducts();
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Text('Categorias', style: TextStyle(fontSize: 20)),
+            // SizedBox(height: 15),
+            // categories != null
+            //     ? SizedBox(
+            //       width: double.infinity,
+            //       height: 40,
+            //       child: categoriesWidget())
+            //     : Container(),
+            // SizedBox(height: 30),
+           Text('Productos', style: TextStyle(fontSize: 20)),
+            products != null ? productsWidget() : Container(),
+          ],
+        ),
+      ),
     );
   }
 }

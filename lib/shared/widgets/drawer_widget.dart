@@ -1,11 +1,20 @@
-
 import 'package:ecommerce/env/theme/app_theme.dart';
+import 'package:ecommerce/modules/auth/pages/register/register_page.dart';
 import 'package:ecommerce/modules/auth/services/auth_service.dart';
 import 'package:ecommerce/shared/helpers/global_helper.dart';
 import 'package:ecommerce/shared/widgets/alert_dialog_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../modules/administration/pages/list_product_page.dart';
+import '../../modules/auth/pages/login/login_page.dart';
+import '../models/login_response.dart';
+import '../providers/functional_provider.dart';
+import '../secure_storage/user_data_storage.dart';
 
 class DrawerWidget extends StatefulWidget {
+  static LoginResponse? userData;
+  static bool isLogged = false;
   const DrawerWidget({super.key});
 
   @override
@@ -13,44 +22,41 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
-  AuthService authService = AuthService();
-  String token = '';
-  String name = 'nombre';
-  String lastname = 'apellido';
-  String email = 'correo electrónico';
-  String photo = '';
-  bool isLogged = false;
-
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      userInformation();
+    });
     super.initState();
-    //getData();
   }
 
-  // void getData() async {
-  //   final user = await authService.getCredentials();
-  //   setState(() {
-  //     token = user[0].token;
-  //     name = user[0].nombreUsuario;
-  //     lastname = user[0].apellidoUsuario;
-  //     email = user[0].correoUsuario;
-  //     photo = user[0].fotoUsuario;
-  //     isLogged = user[0].isLogged;
-  //   });
-  // }
+  void userInformation() async {
+    LoginResponse? userData = await UserDataStorage().getUserData();
+    if (userData != null) {
+      DrawerWidget.userData = userData;
+      DrawerWidget.isLogged = true;
+      //setState(() {});
+    }
+    // DrawerWidget.userData = userData;
+    // DrawerWidget.isLogged = true;
+    // setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final fp = Provider.of<FunctionalProvider>(context, listen: false);
+
     return Drawer(
-      width: size.width * 0.845,
+      
+      width: size.width * 0.78,
       elevation: 5,
       surfaceTintColor: AppTheme.blueGrey,
       backgroundColor: AppTheme.blueGrey,
       shadowColor: AppTheme.black,
       child: ListView(
         children: [
-          if (isLogged)
+          if (DrawerWidget.isLogged)
             UserAccountsDrawerHeader(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
@@ -83,7 +89,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                             image: AssetImage('assets/no-image.png'));
                       },
                       placeholder: const AssetImage('assets/loading.gif'),
-                      image: NetworkImage(photo),
+                      image: NetworkImage(DrawerWidget.userData!.photo),
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height,
                       fit: BoxFit.cover,
@@ -92,7 +98,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 ),
               ),
               accountName: Text(
-                '$name $lastname',
+                '${DrawerWidget.userData!.name} ${DrawerWidget.userData!.lastName}',
                 style: TextStyle(
                   shadows: [
                     BoxShadow(
@@ -104,7 +110,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   ],
                 ),
               ),
-              accountEmail: Text(email),
+              accountEmail: Text(DrawerWidget.userData!.email),
             )
           else
             Column(
@@ -122,7 +128,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   ),
                   child: Center(
                     child: Text(
-                      'Compu Mundo',
+                      'Ecormmerce',
                       style: TextStyle(
                         shadows: [
                           BoxShadow(
@@ -151,58 +157,90 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   icon: Icons.login,
                   onTap: () {
                     Navigator.of(context).pop();
-                    GlobalHelper.navigateToPage(context, '/login');
+                    final loginPageKey = GlobalHelper.genKey();
+                    fp.addPage(
+                        key: loginPageKey,
+                        content: LoginPage(
+                            keyPage: loginPageKey, key: loginPageKey));
+                    //GlobalHelper.navigateToPage(context, '/login');
                   },
                 ),
                 _LisTitleDrawer(
                   title: 'Registrarse',
                   icon: Icons.app_registration_outlined,
                   onTap: () {
+                    final registrePageKey = GlobalHelper.genKey();
                     Navigator.of(context).pop();
-                    GlobalHelper.navigateToPage(context, '/register');
+                    fp.addPage(
+                        key: registrePageKey,
+                        content: RegisterPage(
+                            keyPage: registrePageKey, key: registrePageKey));
+                    //GlobalHelper.navigateToPage(context, '/register');
                   },
                 ),
               ],
             ),
-          if (isLogged)
+          if (DrawerWidget.isLogged)
+          Column(
+            children: [
+              _LisTitleDrawer(
+              title: 'Administración',
+              icon: Icons.person_outline,
+              onTap: () {
+                final adminPageKey = GlobalHelper.genKey();
+                Navigator.of(context).pop();
+                fp.addPage(
+                    key: adminPageKey,
+                    content: ListProductPage(
+                        keyPage: adminPageKey, key: adminPageKey));
+                //GlobalHelper.navigateToPage(context, '/profile');
+              },
+            ),
             _LisTitleDrawer(
               title: 'Cerrar sesión',
               icon: Icons.logout,
-              onTap: () {
+              onTap: () async {
                 Navigator.of(context).pop();
-                showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (context) {
-                    return AlertDialogWidget(
-                      key: const Key('logout'),
-                      alertTitle: 'Cerrar Sesión',
-                      alertContent: '¿Está seguro que desea cerrar sesión?',
-                      onPressed: () async {
-                        // final message = ScaffoldMessenger.of(context);
-                        // final alert = Navigator.of(context);
-                        // final logout = await authService.logout(token);
-                        // if (logout) {
-                        //   alert.pop();
-                        //   message.showSnackBar(
-                        //     const SnackBar(
-                        //       content: Text('Sesión cerrada, vuelva pronto.'),
-                        //     ),
-                        //   );
-                        // } else {
-                        //   message.showSnackBar(
-                        //     const SnackBar(
-                        //       content: Text(
-                        //           'Error al cerrar sesión, intente de nuevo.'),
-                        //     ),
-                        //   );
-                        // }
-                      },
-                    );
-                  },
-                );
+                DrawerWidget.isLogged = false;
+                DrawerWidget.userData = null;
+                await UserDataStorage().removeUserData();
+                //setState(() {});
+                // showDialog(
+                //   barrierDismissible: false,
+                //   context: context,
+                //   builder: (context) {
+                //     return AlertDialogWidget(
+                //       key: const Key('logout'),
+                //       alertTitle: 'Cerrar Sesión',
+                //       alertContent: '¿Está seguro que desea cerrar sesión?',
+                //       onPressed: () async {
+                //         // final message = ScaffoldMessenger.of(context);
+                //         // final alert = Navigator.of(context);
+                //         // final logout = await authService.logout(token);
+                //         // if (logout) {
+                //         //   alert.pop();
+                //         //   message.showSnackBar(
+                //         //     const SnackBar(
+                //         //       content: Text('Sesión cerrada, vuelva pronto.'),
+                //         //     ),
+                //         //   );
+                //         // } else {
+                //         //   message.showSnackBar(
+                //         //     const SnackBar(
+                //         //       content: Text(
+                //         //           'Error al cerrar sesión, intente de nuevo.'),
+                //         //     ),
+                //         //   );
+                //         // }
+                //       },
+                //     );
+                //   },
+                //);
               },
             ),
+            ],
+          )
+            
         ],
       ),
     );

@@ -6,6 +6,8 @@ import 'package:ecommerce/shared/widgets/discount_label_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../modules/home/models/products_response.dart';
+
 class CardProductWidget extends StatelessWidget {
   const CardProductWidget({super.key, required this.product});
   final Products product;

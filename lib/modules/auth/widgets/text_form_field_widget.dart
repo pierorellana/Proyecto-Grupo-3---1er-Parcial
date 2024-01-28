@@ -15,6 +15,7 @@ class TextFormFieldWidget extends StatelessWidget {
       this.textInputAction,
       this.prefixIcon,
       this.suffixIcon,
+      this.readOnly = false,
       this.obscureText = false});
 
   final double maxWidth;
@@ -28,6 +29,7 @@ class TextFormFieldWidget extends StatelessWidget {
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final bool obscureText;
+  final bool? readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +50,7 @@ class TextFormFieldWidget extends StatelessWidget {
           child: SizedBox(height: 45, width: maxWidth),
         ),
         TextFormField(
+          readOnly: readOnly!,
           obscureText: obscureText,
           textInputAction: textInputAction,
           inputFormatters: inputFormatters,

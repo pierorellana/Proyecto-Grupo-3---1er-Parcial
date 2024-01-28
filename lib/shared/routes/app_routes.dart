@@ -1,6 +1,6 @@
 import 'package:ecommerce/modules/404/pages/not_found_page.dart';
-import 'package:ecommerce/modules/administration/product/pages/list_product_page.dart';
-import 'package:ecommerce/modules/administration/product/pages/new_product_page.dart';
+import 'package:ecommerce/modules/administration/pages/list_product_page.dart';
+import 'package:ecommerce/modules/administration/pages/new_product_page.dart';
 import 'package:ecommerce/modules/auth/pages/login/login_page.dart';
 import 'package:ecommerce/modules/auth/pages/register/register_page.dart';
 import 'package:ecommerce/modules/cart/pages/cart_page.dart';
@@ -10,17 +10,17 @@ import 'package:ecommerce/modules/product_category/pages/product_category_page.d
 import 'package:flutter/material.dart';
 
 class AppRoutes {
-  static const String initialRoute = '/login';
+  static const String initialRoute = '/home';
 
   static final Map<String, WidgetBuilder> routes = {
     '/home': (_) => const HomePage(),
     // '/product_brand': (_) => const ProductBrandPage(),
     // '/product_category': (_) => const ProductCategoryPage(),
-    '/login': (_) => const LoginPage(),
+    //'/login': (_) => const LoginPage(),
     //'/cart': (_) => const CartPage(),
     //'/register': (_) => const RegisterPage(),
-    '/administration': (_) => const ListProductPage(),
-    '/new_product': (_) => const NewProductPage(),
+    //'/administration': (_) => const ListProductPage(),
+    //'/new_product': (_) => const NewProductPage(),
   };
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {

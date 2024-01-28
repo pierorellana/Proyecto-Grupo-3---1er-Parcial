@@ -12,6 +12,7 @@ import 'package:ecommerce/shared/secure_storage/user_data_storage.dart';
 import 'package:ecommerce/shared/widgets/alerts_template.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 
@@ -29,7 +30,7 @@ class InterceptorHttp {
     Function(int sentBytes, int totalBytes)? onProgressLoad,
   }) async {
 
-    //var logger = Logger(printer: PrettyPrinter(methodCount: 0, printEmojis : false));
+    var logger = Logger(printer: PrettyPrinter(methodCount: 0, printEmojis : false));
     final serviceUrl = Environment().config?.serviceUrl ?? 'name app default';
 
     String url = "$serviceUrl$endPoint?${Uri(queryParameters: queryParameters).query}";
@@ -88,6 +89,7 @@ class InterceptorHttp {
       int responseStatusCode = 0;
       String responseBody = "";
 
+      
       switch (requestType) {
         case "JSON":
           switch (method) {
@@ -110,6 +112,11 @@ class InterceptorHttp {
                   headers: _headers,
                   body: body != null ? json.encode(body) : null);
               break;
+            case "DELETE":
+              _response = await http.delete(uri,
+                  headers: _headers,
+                  body: body != null ? json.encode(body) : null);
+              break;
 
             default:
               _response = await http.post(uri, body: jsonEncode(body));
@@ -122,6 +129,8 @@ class InterceptorHttp {
           //logger.f(responseBody);
           //Logger(printer: SimplePrinter(colors: true), level: Level.trace).w(json.decode(responseBody));
           //logger.log(Level.trace, json.decode(responseBody));
+          logger.log(Level.trace, json.decode(responseBody));
+
 
           break;
         case "FORM":

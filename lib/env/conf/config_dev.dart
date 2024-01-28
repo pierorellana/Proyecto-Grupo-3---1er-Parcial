@@ -3,7 +3,7 @@ import 'package:ecommerce/env/conf/config_base.dart';
 class DevEnv extends BaseConfig{
   
   @override
-  String get appName => 'Solca App';
+  String get appName => 'Ecommerce';
 
   @override
 
